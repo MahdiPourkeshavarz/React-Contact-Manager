@@ -1,15 +1,16 @@
 import { ContactForm } from "./components/contactForm/contactForm";
 import { ContactList } from "./components/contactList/contactList";
-import { contacts } from "../data/database";
+import { contacts as initialContacts } from "./data/database";
 import { DeleteModal } from "./components/deleteModal/deleteModal";
+import { useState } from "react";
 
 function App() {
   let person = {};
   let deletedName = "";
-  let peoples = [...contacts];
+  const [contacts, setContacts] = useState(initialContacts);
   function onEdit(idNumber) {
     person = contacts.filter((person) => person.id !== idNumber);
-    peoples = contacts.filter((person) => person.id === idNumber);
+    setContacts(contacts.filter((person) => person.id === idNumber));
   }
 
   function onDelete(idNumber) {
@@ -17,14 +18,14 @@ function App() {
     deletedName = `${deletedperson.firstName} ${deletedperson.lastName}`;
   }
 
-  function submitHandler(person) {
-    peoples = [...contacts, person];
+  function submitHandler(newContact) {
+    setContacts([...contacts, newContact]);
   }
 
   return (
     <>
       <ContactForm onSubmit={submitHandler} data={person} />
-      <ContactList data={peoples} onEdit={onEdit} onDelete={onDelete} />
+      <ContactList data={contacts} onEdit={onEdit} onDelete={onDelete} />
       {deletedName && <DeleteModal name={deletedName} />}
     </>
   );
