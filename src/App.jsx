@@ -5,23 +5,38 @@ import { DeleteModal } from "./components/deleteModal/deleteModal";
 import { useState } from "react";
 
 function App() {
-  let person = {};
-  let deletedName = "";
+  const [person, setPerson] = useState({});
+  const [deletedName, setDeletedName] = useState("");
   const [contacts, setContacts] = useState(initialContacts);
+
   function onEdit(idNumber) {
-    person = contacts.filter((person) => person.id !== idNumber);
-    setContacts(contacts.filter((person) => person.id === idNumber));
+    const personToEdit = contacts.find((person) => person.id === idNumber);
+    setPerson(personToEdit);
   }
 
   function onDelete(idNumber) {
-    console.log(idNumber);
-    const deletedperson = contacts.filter((person) => person.id !== idNumber);
-    deletedName = `${deletedperson.firstName} ${deletedperson.lastName}`;
-    setContacts(contacts.filter((person) => person.id === idNumber));
+    const remainingContacts = contacts.filter(
+      (person) => person.id !== idNumber
+    );
+    const deletedPerson = contacts.find((person) => person.id === idNumber);
+    setDeletedName(`${deletedPerson.firstName} ${deletedPerson.lastName}`);
+    setContacts(remainingContacts);
   }
 
   function submitHandler(newContact) {
-    setContacts([...contacts, newContact]);
+    const contactExists = contacts.some(
+      (contact) => contact.id === newContact.id
+    );
+    if (contactExists) {
+      setContacts(
+        contacts.map((contact) =>
+          contact.id === newContact.id ? newContact : contact
+        )
+      );
+    } else {
+      setContacts([...contacts, newContact]);
+    }
+    setPerson({});
   }
 
   return (

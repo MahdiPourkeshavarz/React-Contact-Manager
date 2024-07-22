@@ -14,6 +14,7 @@ export function ContactForm({ onSubmit, data }) {
       email: data?.email || "",
       id: data?.id || crypto.randomUUID(),
     },
+    enableReinitialize: true,
     validationSchema: Yup.object({
       firstName: Yup.string()
         .min(3, "نام باید حداقل سه حرف باشد")
@@ -40,7 +41,7 @@ export function ContactForm({ onSubmit, data }) {
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className="grid grid-cols-1 w-[430px] h-max mx-auto"
+      className="grid grid-cols-1 w-[430px] h-max mx-auto p-1 bg-slate-50 gap-y-4"
     >
       <div>
         <input
@@ -50,10 +51,12 @@ export function ContactForm({ onSubmit, data }) {
           value={formik.values.firstName}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          className="text-right"
+          className="text-right w-full focus:outline-none focus:border-2 focus:border-blue-300 h-10 border-2 border-blue-100 rounded-2xl pr-4 placeholder:text-slate-500"
         />
         {formik.touched.firstName && formik.errors.firstName ? (
-          <div>{formik.errors.firstName}</div>
+          <div className="text-red-900 text-right pr-4">
+            {formik.errors.firstName}
+          </div>
         ) : null}
       </div>
       <div>
@@ -64,7 +67,7 @@ export function ContactForm({ onSubmit, data }) {
           value={formik.values.lastName}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          className="text-right"
+          className="text-right w-full focus:outline-none focus:border-2 focus:border-blue-300 h-10 border-2 border-blue-100 rounded-2xl pr-4 placeholder:text-slate-500"
         />
         {formik.touched.lastName && formik.errors.lastName ? (
           <div>{formik.errors.lastName}</div>
@@ -78,7 +81,7 @@ export function ContactForm({ onSubmit, data }) {
           value={formik.values.phoneNumber}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          className="text-right"
+          className="text-right w-full focus:outline-none focus:border-2 focus:border-blue-300 h-10 border-2 border-blue-100 rounded-2xl pr-4 placeholder:text-slate-500"
         />
         {formik.touched.phoneNumber && formik.errors.phoneNumber ? (
           <div>{formik.errors.phoneNumber}</div>
@@ -90,6 +93,7 @@ export function ContactForm({ onSubmit, data }) {
           value={formik.values.relation}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          className="text-right w-full focus:outline-none focus:border-2 focus:border-blue-300 h-10 border-2 border-blue-100 rounded-2xl pr-4 placeholder:text-slate-500"
         >
           <option value="" label="نسبت" />
           <option value="اعضای خانواده" label="اعضای خانواده" />
@@ -109,13 +113,18 @@ export function ContactForm({ onSubmit, data }) {
           value={formik.values.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          className="text-right"
+          className="text-right w-full focus:outline-none focus:border-2 focus:border-blue-300 h-10 border-2 border-blue-100 rounded-2xl pr-4 placeholder:text-slate-500"
         />
         {formik.touched.email && formik.errors.email ? (
           <div>{formik.errors.email}</div>
         ) : null}
       </div>
-      <button type="submit">ذخیره</button>
+      <button
+        type="submit"
+        className="w-full py-3 bg-blue-500 text-white rounded-3xl hover:bg-blue-700 transition"
+      >
+        ذخیره
+      </button>
     </form>
   );
 }

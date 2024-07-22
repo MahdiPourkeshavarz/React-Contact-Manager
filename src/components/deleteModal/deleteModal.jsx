@@ -11,7 +11,6 @@ export function DeleteModal({ name }) {
   }, [name]);
   return (
     <>
-      <h2>{name}</h2>
       <ToastContainer />
     </>
   );
