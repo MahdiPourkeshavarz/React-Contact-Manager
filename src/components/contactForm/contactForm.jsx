@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useEffect } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -12,13 +12,13 @@ export function ContactForm({ onSubmit, data }) {
       phoneNumber: data?.phoneNumber || "",
       relation: data?.relation || "",
       email: data?.email || "",
-      id: data?.id || crypto.randomUUID(),
+      id: data?.id,
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
       firstName: Yup.string()
         .min(3, "نام باید حداقل سه حرف باشد")
-        .required("نام  الزامی است."),
+        .required("نام الزامی است."),
       lastName: Yup.string()
         .min(3, "نام خوانوادگی باید حداقل 3 حرف باشد")
         .required("نام خوانوادگی الزامی است"),

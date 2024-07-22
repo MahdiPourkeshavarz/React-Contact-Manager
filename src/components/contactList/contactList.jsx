@@ -10,14 +10,12 @@ export function ContactList({ data, onEdit, onDelete }) {
         {data &&
           data.map((contact) => {
             return (
-              <>
-                <ContactItem
-                  key={contact.id}
-                  {...contact}
-                  onDelete={onDelete}
-                  onEdit={onEdit}
-                />
-              </>
+              <ContactItem
+                key={contact.id}
+                {...contact}
+                onDelete={onDelete}
+                onEdit={onEdit}
+              />
             );
           })}
       </div>
