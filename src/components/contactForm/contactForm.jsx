@@ -1,18 +1,19 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { ContactContext } from "../../contactContext";
 
-export function ContactForm({ onSubmit, data }) {
+export function ContactForm() {
+  const { submitHandler, person } = useContext(ContactContext);
   const formik = useFormik({
     initialValues: {
-      firstName: data?.firstName || "",
-      lastName: data?.lastName || "",
-      phoneNumber: data?.phoneNumber || "",
-      relation: data?.relation || "",
-      email: data?.email || "",
-      id: data?.id,
+      firstName: person?.firstName || "",
+      lastName: person?.lastName || "",
+      phoneNumber: person?.phoneNumber || "",
+      relation: person?.relation || "",
+      email: person?.email || "",
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -33,7 +34,7 @@ export function ContactForm({ onSubmit, data }) {
         .required("ایمیل الزامی است."),
     }),
     onSubmit: (values) => {
-      onSubmit(values);
+      submitHandler({ ...values, id: crypto.randomUUID() });
       formik.resetForm();
     },
   });

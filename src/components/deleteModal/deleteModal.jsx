@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ContactContext } from "../../contactContext";
 
 /* eslint-disable react/prop-types */
-export function DeleteModal({ name }) {
+export function DeleteModal() {
+  const { deletedName } = useContext(ContactContext);
   React.useEffect(() => {
-    if (name) {
-      toast(`Deleted person: ${name}`);
+    if (deletedName) {
+      toast(`Deleted person: ${deletedName}`);
     }
-  }, [name]);
+  }, [deletedName]);
   return (
     <>
       <ToastContainer />
