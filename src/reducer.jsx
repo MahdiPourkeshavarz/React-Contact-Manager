@@ -53,5 +53,25 @@ export function contactReducer(state, action) {
         deletedName: `${deletedPerson.firstName} ${deletedPerson.lastName}`,
       };
     case ACTIONS.SUBMIT_CONTACT:
+      const contactExists = state.contacts.some(
+        (person) => person.id === action.payload.id
+      );
+      return {
+        ...state,
+        contacts: contactExists
+          ? state.contacts.map((person) =>
+              person.id === action.payload.id ? action.payload : person
+            )
+          : [...state.contacts, action.payload],
+        person: {},
+      };
+    case ACTIONS.SET_SEARCH_VALUE:
+      return { ...state, searchValue: action.payload };
+    case ACTIONS.TOGGLE_MODAL:
+      return { ...state, isOpen: !state.isOpen };
+    case ACTIONS.SET_CONFIRMATION:
+      return { ...state, isConfirmed: !state.isConfirmed };
+    default:
+      return state;
   }
 }
