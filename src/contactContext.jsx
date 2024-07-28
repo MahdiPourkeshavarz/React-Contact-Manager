@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { createContext, useState } from "react";
-import { contacts as initialContacts } from "../data/database";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 export const ContactContext = createContext();
 
 export const ContactProvider = ({ children }) => {
-  const [contacts, setContacts] = useState(initialContacts);
+  const [contacts, setContacts] = useState();
   const [person, setPerson] = useState({});
   const [deletedName, setDeletedName] = useState("");
 
@@ -53,6 +54,14 @@ export const ContactProvider = ({ children }) => {
         onEdit,
         onDelete,
         submitHandler,
+        searchValue,
+        onSearch,
+        isOpen,
+        onClose,
+        onConfirm,
+        isConfirmed,
+        error,
+        isLoading,
       }}
     >
       {children}

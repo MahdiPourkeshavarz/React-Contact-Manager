@@ -5,7 +5,18 @@ import { ContactItem } from "./contactItem/contactItem";
 import { ContactContext } from "../../contactContext";
 
 export function ContactList() {
-  const { contacts, onEdit, onDelete } = useContext(ContactContext);
+  const { contacts, onEdit, onDelete, error, isLoading } =
+    useContext(ContactContext);
+
+  if (isLoading)
+    return <div className="my-8 font-semibold text-2xl">Loading...</div>;
+  if (error)
+    return (
+      <div className="my-8 font-semibold text-2xl text-red-600">
+        Error loading contacts
+      </div>
+    );
+
   return (
     <>
       <p className="mb-8 mt-4 font-semibold text-xl">مخاطبین</p>
