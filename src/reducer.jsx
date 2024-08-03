@@ -6,6 +6,8 @@ export const initialState = {
   searchValue: "",
   isOpen: false,
   isConfirmed: false,
+  page: 1,
+  limit: 5,
 };
 
 export const ACTIONS = {
@@ -18,6 +20,7 @@ export const ACTIONS = {
   SET_SEARCH_VALUE: "setSearchValue",
   TOGGLE_MODAL: "toggleModal",
   SET_CONFIRMATION: "setConfirmation",
+  SET_PAGE: "setPage",
 };
 
 export function contactReducer(state, action) {
@@ -42,15 +45,13 @@ export function contactReducer(state, action) {
       };
     case ACTIONS.DELETE_CONTACT:
       const remaining = state.contacts.filter(
-        (person) => person.id !== action.payload
-      );
-      const deletedPerson = state.contacts.find(
-        (person) => person.id === action.payload
+        (person) => person.id !== action.payload.id
       );
       return {
         ...state,
+        person: {...state.person, id: action.payload},
         contacts: remaining,
-        deletedName: `${deletedPerson.firstName} ${deletedPerson.lastName}`,
+        deletedName: "",
       };
     case ACTIONS.SUBMIT_CONTACT:
       const contactExists = state.contacts.some(
@@ -71,6 +72,8 @@ export function contactReducer(state, action) {
       return { ...state, isOpen: !state.isOpen };
     case ACTIONS.SET_CONFIRMATION:
       return { ...state, isConfirmed: !state.isConfirmed };
+    case ACTIONS.SET_PAGE:
+      return { ...state, page: action.payload };
     default:
       return state;
   }
