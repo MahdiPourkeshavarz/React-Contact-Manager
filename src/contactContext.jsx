@@ -8,18 +8,6 @@ import { ACTIONS, contactReducer, initialState } from "./reducer";
 
 export const ContactContext = createContext();
 
-const fetchContacts = async ({ queryKey }) => {
-  const [, { searchValue, page, limit }] = queryKey;
-  const params = new URLSearchParams();
-  if (searchValue) params.append("q", searchValue);
-  params.append("_page", page);
-  params.append("_limit", limit);
-  const { data } = await axios.get(
-    `http://localhost:3000/contacts?${params.toString()}`
-  );
-  return data;
-};
-
 const addContact = async (contact) => {
   const { data } = await axios.post("http://localhost:3000/contacts", contact);
   return data;
@@ -41,19 +29,33 @@ export const ContactProvider = ({ children }) => {
   const [state, dispatch] = useReducer(contactReducer, initialState);
   const queryClient = useQueryClient();
 
+  const fetchContacts = async ({ queryKey }) => {
+    const [, { searchValue, page, limit }] = queryKey;
+    const params = new URLSearchParams();
+    if (searchValue) params.append("q", searchValue);
+    params.append("_page", page);
+    params.append("_limit", limit);
+    const { data } = await axios.get(
+      `http://localhost:3000/contacts?${params.toString()}`
+    );
+    dispatch({ type: ACTIONS.SET_CONTACTS, payload: data });
+    return data;
+  };
+
   const {
     data: contacts,
     error,
     isLoading,
+    refetch,
   } = useQuery({
     queryKey: [
       "contacts",
       { searchValue: state.searchValue, page: state.page, limit: 5 },
     ],
     queryFn: fetchContacts,
-    onSuccess: (data) => {
-      dispatch({ type: ACTIONS.SET_CONTACTS, payload: data });
-    },
+    // onSuccess: (data) => {
+    //   dispatch({ type: ACTIONS.SET_CONTACTS, payload: data });
+    // },
   });
 
   const addMutation = useMutation({
@@ -66,7 +68,8 @@ export const ContactProvider = ({ children }) => {
   const deleteMutation = useMutation({
     mutationFn: (id) => deleteContact(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: "contacts" });
+      // queryClient.invalidateQueries({ queryKey: "contacts" });
+      refetch();
     },
   });
 
@@ -82,16 +85,24 @@ export const ContactProvider = ({ children }) => {
   }
 
   function onDelete(contactId) {
-    const contactToDelete = contacts.find(contact => contact.id === contactId);
+    const contactToDelete = contacts.find(
+      (contact) => contact.id === contactId
+    );
     if (contactToDelete) {
-      dispatch({ type: ACTIONS.SET_DELETED_NAME, payload: {personFullName: `${contactToDelete.firstName} ${contactToDelete.lastName}`, id: contactId} });
+      dispatch({
+        type: ACTIONS.SET_DELETED_NAME,
+        payload: [
+          `${contactToDelete.firstName} ${contactToDelete.lastName}`,
+          contactId,
+        ],
+      });
       dispatch({ type: ACTIONS.TOGGLE_MODAL });
     }
   }
 
   function submitHandler(newContact) {
     if (newContact.id === state.person.id) {
-      editMutation.mutate(newContact)
+      editMutation.mutate(newContact);
     }
     addMutation.mutate(newContact);
     dispatch({ type: ACTIONS.SUBMIT_CONTACT, payload: newContact });
@@ -110,9 +121,9 @@ export const ContactProvider = ({ children }) => {
   }
 
   function onConfirm() {
-    dispatch({ type: ACTIONS.DELETE_CONTACT, payload: state.person.id });
+    dispatch({ type: ACTIONS.DELETE_CONTACT, payload: state.deletePersonId });
     dispatch({ type: ACTIONS.TOGGLE_MODAL });
-    deleteMutation.mutate(state.person.id)
+    deleteMutation.mutate(state.deletePersonId);
   }
 
   return (
@@ -133,7 +144,7 @@ export const ContactProvider = ({ children }) => {
         isLoading,
         handlePageChange,
         isOpen: state.isOpen,
-        page: state.page
+        page: state.page,
       }}
     >
       {children}
