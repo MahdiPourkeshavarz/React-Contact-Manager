@@ -1,20 +1,25 @@
 import { useContext } from "react";
 import { ContactContext } from "../../contactContext";
+import { useDebouncedCallback } from "use-debounce";
 
 export function SearchBar() {
-  const { searchValue, onSearch } = useContext(ContactContext);
+  const { onSearch } = useContext(ContactContext);
 
-  function setSearchValue(value) {
-    onSearch(value);
-  }
+  const debounced = useDebouncedCallback(
+    // function
+    (value) => {
+      onSearch(value);
+    },
+    // delay in ms
+    1000
+  );
 
   return (
     <>
       <input
         className="border-none focus:outline-none h-8 w-80 rounded-2xl text-black text-center my-8"
         type="text"
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
+        onChange={(e) => debounced(e.target.value)}
         placeholder="Search People"
       />
     </>

@@ -3,8 +3,9 @@
 import { createContext, useReducer, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-
 import { ACTIONS, contactReducer, initialState } from "./reducer";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 export const ContactContext = createContext();
 
@@ -53,9 +54,38 @@ export const ContactProvider = ({ children }) => {
       { searchValue: state.searchValue, page: state.page, limit: 5 },
     ],
     queryFn: fetchContacts,
-    // onSuccess: (data) => {
-    //   dispatch({ type: ACTIONS.SET_CONTACTS, payload: data });
-    // },
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      relation: "",
+      email: "",
+    },
+    enableReinitialize: true,
+    validationSchema: Yup.object({
+      firstName: Yup.string()
+        .min(3, "نام باید حداقل سه حرف باشد")
+        .required("نام الزامی است."),
+      lastName: Yup.string()
+        .min(3, "نام خوانوادگی باید حداقل 3 حرف باشد")
+        .required("نام خوانوادگی الزامی است"),
+      phoneNumber: Yup.string()
+        .matches(/^09[0-9]+$/, "شماره تماس باید فقط عدد باشد.")
+        .min(11, "شماره تلفن باید ۱۱ رقم باشد.")
+        .max(11, "شماره تلفن باید ۱۱ رقم باشد.")
+        .required("شماره تلفن الزامیست"),
+      relation: Yup.string().required("الزامی"),
+      email: Yup.string()
+        .email("ایمیل به صورت نادرست وارد شده است.")
+        .required("ایمیل الزامی است."),
+    }),
+    onSubmit: (values) => {
+      submitHandler({ ...values });
+      formik.resetForm();
+    },
   });
 
   const addMutation = useMutation({
@@ -76,7 +106,7 @@ export const ContactProvider = ({ children }) => {
   const editMutation = useMutation({
     mutationFn: editContact,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: "contacts" });
+      queryClient.invalidateQueries({ queryKey: ["contacts"] });
     },
   });
 
@@ -101,11 +131,13 @@ export const ContactProvider = ({ children }) => {
   }
 
   function submitHandler(newContact) {
+    const id = crypto.randomUUID()
     if (newContact.id === state.person.id) {
       editMutation.mutate(newContact);
+      return;
     }
-    addMutation.mutate(newContact);
-    dispatch({ type: ACTIONS.SUBMIT_CONTACT, payload: newContact });
+    addMutation.mutate({...newContact, id});
+    dispatch({ type: ACTIONS.SUBMIT_CONTACT, payload: {...newContact, id} });
   }
 
   function onSearch(value) {
@@ -134,7 +166,6 @@ export const ContactProvider = ({ children }) => {
         deletedName: state.deletedName,
         onEdit,
         onDelete,
-        submitHandler,
         searchValue: state.searchValue,
         onSearch,
         onClose,
@@ -145,6 +176,7 @@ export const ContactProvider = ({ children }) => {
         handlePageChange,
         isOpen: state.isOpen,
         page: state.page,
+        formik
       }}
     >
       {children}

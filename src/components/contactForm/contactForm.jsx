@@ -1,43 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useContext, useEffect } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import { ContactContext } from "../../contactContext";
 
 export function ContactForm() {
-  const { submitHandler, person } = useContext(ContactContext);
-  const formik = useFormik({
-    initialValues: {
-      firstName: person?.firstName || "",
-      lastName: person?.lastName || "",
-      phoneNumber: person?.phoneNumber || "",
-      relation: person?.relation || "",
-      email: person?.email || "",
-    },
-    enableReinitialize: true,
-    validationSchema: Yup.object({
-      firstName: Yup.string()
-        .min(3, "نام باید حداقل سه حرف باشد")
-        .required("نام الزامی است."),
-      lastName: Yup.string()
-        .min(3, "نام خوانوادگی باید حداقل 3 حرف باشد")
-        .required("نام خوانوادگی الزامی است"),
-      phoneNumber: Yup.string()
-        .matches(/^09[0-9]+$/, "شماره تماس باید فقط عدد باشد.")
-        .min(11, "شماره تلفن باید ۱۱ رقم باشد.")
-        .max(11, "شماره تلفن باید ۱۱ رقم باشد.")
-        .required("شماره تلفن الزامیست"),
-      relation: Yup.string().required("الزامی"),
-      email: Yup.string()
-        .email("ایمیل به صورت نادرست وارد شده است.")
-        .required("ایمیل الزامی است."),
-    }),
-    onSubmit: (values) => {
-      submitHandler({ ...values, id: crypto.randomUUID() });
-      formik.resetForm();
-    },
-  });
+  const { submitHandler, person, formik } = useContext(ContactContext);
 
   useEffect(() => {
     formik.setValues({
@@ -46,6 +13,7 @@ export function ContactForm() {
       phoneNumber: person.phoneNumber,
       relation: person.relation,
       email: person.email,
+      id: person.id
     });
   }, [person]);
   return (
