@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { ContactContext } from "../../contactContext";
@@ -39,6 +39,15 @@ export function ContactForm() {
     },
   });
 
+  useEffect(() => {
+    formik.setValues({
+      firstName: person.firstName,
+      lastName: person.lastName,
+      phoneNumber: person.phoneNumber,
+      relation: person.relation,
+      email: person.email,
+    });
+  }, [person]);
   return (
     <form
       onSubmit={formik.handleSubmit}

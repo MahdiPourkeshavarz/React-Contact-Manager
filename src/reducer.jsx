@@ -8,6 +8,7 @@ export const initialState = {
   isConfirmed: false,
   page: 1,
   limit: 5,
+  deletePersonId: null,
 };
 
 export const ACTIONS = {
@@ -26,15 +27,22 @@ export const ACTIONS = {
 export function contactReducer(state, action) {
   switch (action.type) {
     case ACTIONS.SET_CONTACTS:
+      console.log(action.payload);
       return { ...state, contacts: action.payload };
     case ACTIONS.SET_PERSON:
       return { ...state, person: action.payload };
     case ACTIONS.SET_DELETED_NAME:
-      return { ...state, deletedName: action.payload };
+      return {
+        ...state,
+        deletedName: action.payload[0],
+        deletePersonId: action.payload[1],
+      };
     case ACTIONS.EDIT_CONTACT:
+      console.log(action.payload);
       const personToEdit = state.contacts.find(
         (person) => person.id === action.payload
       );
+      console.log(personToEdit, state.contacts);
       const remainingContacts = state.contacts.filter(
         (person) => person.id !== action.payload
       );
@@ -45,11 +53,10 @@ export function contactReducer(state, action) {
       };
     case ACTIONS.DELETE_CONTACT:
       const remaining = state.contacts.filter(
-        (person) => person.id !== action.payload.id
+        (person) => person.id !== action.payload
       );
       return {
         ...state,
-        person: {...state.person, id: action.payload},
         contacts: remaining,
         deletedName: "",
       };
