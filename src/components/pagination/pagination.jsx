@@ -12,12 +12,12 @@ export function Pagination() {
 
   return (
     <>
-      <div>
-        <button disabled={page === 1} onClick={() => handlePage(page - 1)}>
+      <div className="flex gap-x-4 justify-center items-center">
+        <button className="bg-purple-600 text-lg px-2 py-1 text-white rounded-2xl" disabled={page === 1} onClick={() => handlePage(page - 1)}>
           Previous
         </button>
-        <span>Page {page}</span>
-        <button onClick={() => handlePage(page + 1)}>Next</button>
+        <span>{page}</span>
+        <button className="bg-purple-600 text-lg px-4 py-1 text-white rounded-2xl" onClick={() => handlePage(page + 1)}>Next</button>
       </div>
     </>
   )

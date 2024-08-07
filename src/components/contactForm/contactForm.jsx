@@ -19,7 +19,7 @@ export function ContactForm() {
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className="grid grid-cols-1 w-[430px] h-max mx-auto p-1 bg-slate-50 gap-y-4"
+      className="grid grid-cols-1 w-1/2 h-max mx-auto p-4 gap-y-4 border rounded-2xl"
     >
       <div>
         <input

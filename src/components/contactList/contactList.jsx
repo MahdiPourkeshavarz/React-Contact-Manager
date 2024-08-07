@@ -20,8 +20,9 @@ export function ContactList() {
   return (
     <>
       <p className="mb-8 mt-4 font-semibold text-xl">مخاطبین</p>
-      <div className="grid lg:grid-cols-3 gap-y-8 px-4 gap-x-48 md:grid-cols-2">
-        {contacts &&
+      <div className="grid lg:grid-cols-3 gap-y-8 px-4 gap-x-48 md:grid-cols-2 mb-10">
+        {contacts.length !== 0
+          ?
           contacts.map((contact) => {
             return (
               <ContactItem
@@ -31,7 +32,13 @@ export function ContactList() {
                 onEdit={onEdit}
               />
             );
-          })}
+          })
+          :
+          <div className="flex flex-col justify-center">
+            <img className="rounded-2xl lg:w-full md:w-3/4 object-cover sm:w-96 h-auto lg:ml-80" src="/no-contact.jpeg" alt="not found" />
+            <p className="text-xl pt-10 lg:ml-80">No Contact Found!</p>
+          </div>
+        }
       </div>
     </>
   );
