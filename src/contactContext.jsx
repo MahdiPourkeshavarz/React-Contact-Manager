@@ -92,7 +92,9 @@ export const ContactProvider = ({ children }) => {
     mutationFn: addContact,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: "contacts" });
+      refetch()
     },
+
   });
 
   const deleteMutation = useMutation({
@@ -132,7 +134,7 @@ export const ContactProvider = ({ children }) => {
 
   function submitHandler(newContact) {
     const id = crypto.randomUUID()
-    if (newContact.id === state.person.id) {
+    if (newContact.id) {
       editMutation.mutate(newContact);
       return;
     }
